@@ -11,6 +11,7 @@ namespace CadiroSniffer.Classes
         public DateTime timeOfOffer { get; set; }
         public string type { get; set; }
         public string status { get; set; }
+        public int qty { get; set; }
         public string itemName { get; set; }
         public int price { get; set; }
     }

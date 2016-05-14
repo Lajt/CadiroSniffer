@@ -87,21 +87,23 @@ namespace CadiroSniffer.Helpers
                     break;
 
             }
-            Offer offer = new Offer()
-            {
-                timeOfOffer = DateTime.Now,
-                itemName = item.FullName,
-                price = price,
-                type = st,
-                status = offerStatus
-            };
 
             App.Current.Dispatcher.Invoke((Action)delegate
             {
-                CadiroSnifferSettings.Instance.OfferCollection.Add(offer);
+                CadiroSnifferSettings.Instance.OfferCollection.Add(
+                    new Offer()
+                    {
+                        timeOfOffer = DateTime.Now,
+                        itemName = item.FullName,
+                        price = price,
+                        qty = item.StackCount,
+                        type = st,
+                        status = offerStatus
+                    });
             });
 
-            SendNotification(temp, st);
+            if(MobileEnabled)
+                SendNotification(temp, st);
         }
 
         public enum Status
