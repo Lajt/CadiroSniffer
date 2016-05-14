@@ -2,6 +2,8 @@
 using System.ComponentModel;
 using Loki;
 using Loki.Common;
+using Newtonsoft.Json;
+using CadiroSniffer.Classes;
 
 namespace CadiroSniffer
 {
@@ -18,6 +20,10 @@ namespace CadiroSniffer
             {
                 DGItemsCollection = new ObservableCollection<StringEntry>();
             }
+            if(OfferCollection == null)
+            {
+                OfferCollection = new ObservableCollection<Offer>();
+            }
         }
 
         private ObservableCollection<StringEntry> _DGItemsCollection;
@@ -33,6 +39,19 @@ namespace CadiroSniffer
         private bool _notifyGodlike;
         private bool _notifyCurrency;
         private bool _notifyAll; // other
+
+        private ObservableCollection<Offer> _offerCollection;
+
+        [JsonIgnore]
+        public ObservableCollection<Offer> OfferCollection
+        {
+            get { return _offerCollection; }
+            set
+            {
+                _offerCollection = value;
+                NotifyPropertyChanged(() => OfferCollection);
+            }
+        }
 
         [DefaultValue(null)]
         public ObservableCollection<StringEntry> DGItemsCollection

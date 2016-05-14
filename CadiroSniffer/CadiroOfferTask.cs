@@ -27,9 +27,6 @@ namespace CadiroSniffer
 
         private bool _skip = false;
 
-        //private bool _notifyCurrencyBought = true;
-        private bool _notifyGodlikeItems = true;
-
         #region Implementation of IRunnable
         
         public void Start()

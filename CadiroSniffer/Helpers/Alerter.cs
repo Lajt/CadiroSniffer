@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using CommunityLib;
 using Loki.Game.Objects;
 using CadiroSniffer.Classes;
+using Exilebuddy;
 
 namespace CadiroSniffer.Helpers
 {
@@ -94,6 +95,11 @@ namespace CadiroSniffer.Helpers
                 type = st,
                 status = offerStatus
             };
+
+            App.Current.Dispatcher.Invoke((Action)delegate
+            {
+                CadiroSnifferSettings.Instance.OfferCollection.Add(offer);
+            });
 
             SendNotification(temp, st);
         }

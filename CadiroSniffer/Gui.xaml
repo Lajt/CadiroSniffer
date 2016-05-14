@@ -76,7 +76,7 @@
         </TabItem>
         <TabItem Header="Offer history">
             <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-                <DataGrid Name="OfferHistory"></DataGrid>
+                <DataGrid Name="OfferHistory" ItemsSource="{Binding Path=OfferCollection}"></DataGrid>
             </ScrollViewer>
         </TabItem>
     </TabControl>
