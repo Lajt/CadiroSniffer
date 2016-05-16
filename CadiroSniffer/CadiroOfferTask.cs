@@ -84,7 +84,7 @@ namespace CadiroSniffer
 
                 await Coroutines.CloseBlockingWindows();
                 var res = await Coroutines.InteractWith(cadiro);
-                Log.ErrorFormat($"[{Name}] Interaction returned: {res}");
+                Log.DebugFormat($"[{Name}] Interaction returned: {res}");
                 if (!res)
                     return true;
                 
@@ -118,6 +118,7 @@ namespace CadiroSniffer
 
                     if (pos != null)
                     {
+                        Log.DebugFormat($"[{Name}] Item is on specific list.");
                         shouldAccept = true;
                         shouldStop = pos.StopOnFailed;
                         maxPrice = pos.MaxPrice;
@@ -125,13 +126,15 @@ namespace CadiroSniffer
 
                     if(item.IsCurrencyType && CadiroSnifferSettings.Instance.AutoCurrency)
                     {
+                        Log.DebugFormat($"[{Name}] Item is currency and autobuy is enabled.");
                         shouldAccept = true;
                     }
 
                     // no specific items so check specific types
                     if (!shouldAccept)
                     {
-                       if(item.IsAmuletType && CadiroSnifferSettings.Instance.AmuletBuy)
+                        Log.DebugFormat($"[{Name}] Checking for specific types.");
+                        if (item.IsAmuletType && CadiroSnifferSettings.Instance.AmuletBuy)
                         {
                             maxPrice = CadiroSnifferSettings.Instance.AmuletPrice;
                             shouldAccept = true;
@@ -151,12 +154,15 @@ namespace CadiroSniffer
                             maxPrice = CadiroSnifferSettings.Instance.MapPrice;
                             shouldAccept = true;
                         }
+                        if(shouldAccept)
+                            Log.DebugFormat($"[{Name}] Specific type in trade window.");
                     }
 
                     if (shouldAccept)
                     {
                         // check if enough space in inv
                         // buy item, maxprice = 0 is unlimited
+                        Log.DebugFormat($"[{Name}] Trying to buy: {item.FullName}");
                         if (canAfford && (price <= maxPrice || maxPrice == 0))
                         {
                             LokiPoe.InGameState.CadiroOfferUi.Accept();
@@ -164,7 +170,7 @@ namespace CadiroSniffer
                             LokiPoe.InGameState.NpcDialogUi.Continue();
                             // check if success
                             Alerter.Notify(item, price, Alerter.Status.Success);
-
+                            Log.DebugFormat($"[{Name}] Item should be purchased at this state.");
                             return false;
                         }
                         else
@@ -172,6 +178,7 @@ namespace CadiroSniffer
                             if (shouldStop)
                             {
                                 Alerter.Notify(item, price, Alerter.Status.Stop);
+                                Log.DebugFormat($"[{Name}] Stopping bot... We found specific item: {item.FullName}");
                                 BotManager.Stop();
                                 return false;
                             }
@@ -180,14 +187,18 @@ namespace CadiroSniffer
 
                     Alerter.Notify(item, price, Alerter.Status.Info);
 
+                    Log.DebugFormat($"[{Name}] Trying to decline trade...");
                     //Decline trade
                     LokiPoe.InGameState.CadiroOfferUi.Decline();
                     _skip = true;
-                    await Coroutine.Sleep(100);
-                    if (LokiPoe.InGameState.CadiroOfferUi.IsOpened)
+                    await Coroutines.ReactionWait();
+                    while(LokiPoe.InGameState.CadiroOfferUi.IsOpened)
                     {
-                        await Coroutines.CloseBlockingWindows();
+                        Log.ErrorFormat($"[{Name}] Cadiro window is still open.");
+                        LokiPoe.InGameState.CadiroOfferUi.Decline();
+                        await Coroutine.Sleep(200);
                     }
+                    Log.DebugFormat($"[{Name}] Cadiro trade window closed.");
                 }
                 else
                 {
@@ -197,7 +208,7 @@ namespace CadiroSniffer
             }
             else if(cadiroPos != Vector2i.Zero)
             {
-                // no cadiro in our sight so move to place where we first seen him
+                Log.ErrorFormat($"[{Name}] No Cadiro in our sight. Moving to place where we first seen him.");
                 await Navigation.MoveToLocation(ExilePather.FastWalkablePositionFor(cadiroPos),25,50000,
                     () => Lajt.NearMonsters());
                 return true;
