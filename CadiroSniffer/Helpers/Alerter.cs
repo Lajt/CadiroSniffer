@@ -7,6 +7,7 @@ using CommunityLib;
 using Loki.Game.Objects;
 using CadiroSniffer.Classes;
 using Exilebuddy;
+using Loki.Game;
 
 namespace CadiroSniffer.Helpers
 {
@@ -20,12 +21,12 @@ namespace CadiroSniffer.Helpers
         public static void SendNotification(string text, string title = "Cadiro call")
         {
             if(CadiroSnifferSettings.Instance.PushoverEnabled && 
-                !string.IsNullOrWhiteSpace(CadiroSnifferSettings.Instance.ApiKey) &&
-                !string.IsNullOrWhiteSpace(CadiroSnifferSettings.Instance.UserKey))
+                !string.IsNullOrWhiteSpace(CadiroSnifferSettings.Instance.PushoverApiKey) &&
+                !string.IsNullOrWhiteSpace(CadiroSnifferSettings.Instance.PushoverUserKey))
             {
                 var req = Notifications.Pushover(
-                            CadiroSnifferSettings.Instance.ApiKey,
-                            CadiroSnifferSettings.Instance.UserKey,
+                            CadiroSnifferSettings.Instance.PushoverApiKey,
+                            CadiroSnifferSettings.Instance.PushoverUserKey,
                             text,
                             title,
                             Notifications.NotificationPriority.Normal);
@@ -61,14 +62,15 @@ namespace CadiroSniffer.Helpers
             
         }
 
-        public static void Notify(Item item, int price, Status status, bool godlike = false)
+        public static void Notify(Item item, int price, Status status)
         {
             string temp = $"{item.StackCount}x {item.FullName} for {price} Perandus coins.";
             string st = status.ToString();
-            string offerStatus = "Declined";
+            string offerResult = "Declined";
+            bool mobileNotify = false;
 
-            if (godlike)
-                st = "GODLIKE!";
+            if (CadiroSnifferSettings.Instance.NotifyAll)
+                mobileNotify = true;
 
             switch (status)
             {
@@ -77,17 +79,22 @@ namespace CadiroSniffer.Helpers
                     break;
                 case Status.Success:
                     temp = $"Successfully purchased: {temp}";
-                    offerStatus = "Accepted";
+                    offerResult = "Accepted";
+                    if (CadiroSnifferSettings.Instance.NotifySuccess)
+                        mobileNotify = true;
                     break;
                 case Status.Failed:
                     temp = $"Purchase failed: {temp}";
                     break;
                 case Status.Stop:
                     temp = $"Bot stopped! Offer: {temp}";
+                    if (CadiroSnifferSettings.Instance.NotifyBotStop)
+                        mobileNotify = true;
                     break;
 
             }
 
+            // add offer info to offer history
             App.Current.Dispatcher.Invoke((Action)delegate
             {
                 CadiroSnifferSettings.Instance.OfferCollection.Add(
@@ -97,12 +104,13 @@ namespace CadiroSniffer.Helpers
                         itemName = item.FullName,
                         price = price,
                         qty = item.StackCount,
-                        type = st,
-                        status = offerStatus
+                        status = st,
+                        result = offerResult,
+                        location = LokiPoe.LocalData.WorldArea.Name
                     });
             });
 
-            if(MobileEnabled)
+            if(MobileEnabled && mobileNotify)
                 SendNotification(temp, st);
         }
 

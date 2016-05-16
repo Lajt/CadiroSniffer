@@ -19,8 +19,7 @@
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"></ColumnDefinition>
                     </Grid.ColumnDefinitions>
-                    <CheckBox Grid.Row="0" Margin="5" Content="Auto currency buying" ToolTip="only small currency so add mirror/exa in specific tab" IsChecked="{Binding Path=AutoCurrency, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                    <Expander Header="Notify options" Grid.Row="1" Margin="5">
+                    <Expander Header="Notify options" Grid.Row="0">
                         <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"></RowDefinition>
@@ -30,13 +29,13 @@
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto" MinWidth="150"></ColumnDefinition>
                             </Grid.ColumnDefinitions>
-                            <CheckBox Grid.Row="0" Grid.Column="0" Margin="5" Content="Notify Success" IsChecked="{Binding Path=NotifySuccess, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                            <CheckBox Grid.Row="1" Grid.Column="0" Margin="5" Content="Notify Bot stop" IsChecked="{Binding Path=NotifyBotStop, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                            <CheckBox Grid.Row="2" Grid.Column="0" Margin="5" Content="Notify all offers" IsChecked="{Binding Path=NotifyAll, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                            <CheckBox Grid.Row="0" Grid.Column="0" Margin="5" Content="Notify Godlike" IsChecked="{Binding Path=NotifyGodlike, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                            <CheckBox Grid.Row="1" Grid.Column="0" Margin="5" Content="Notify Currency" IsChecked="{Binding Path=NotifyCurrency, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                            <CheckBox Grid.Row="2" Grid.Column="0" Margin="5" Content="Notify Other" IsChecked="{Binding Path=NotifyAll, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
                         </Grid>
                     </Expander>
-                    <Expander Header="Mobile settings" Grid.Row="2" Margin="5">
+                    <Expander Header="Mobile settings" Grid.Row="1">
                         <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"></RowDefinition>
@@ -58,66 +57,26 @@
 
                             <CheckBox Grid.Row="2" Grid.Column="0" VerticalAlignment="Center" Margin="5" Content="Enable Prowl" IsChecked="{Binding Path=ProwlEnabled, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                             <TextBox Grid.Column="1" Grid.Row="2" ToolTip="Enter Prowl Key here" VerticalAlignment="Center" Margin="5" Text="{Binding Path=ProwlKey, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-
+                            
                         </Grid>
                     </Expander>
                 </Grid>
             </ScrollViewer>
         </TabItem>
-        <TabItem Header="Specific Items">
+        <TabItem Header="Godlike items">
             <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
                 <StackPanel>
-                    <DataGrid x:Name="CommonItems" BorderThickness="1" CanUserSortColumns="False" ItemsSource="{Binding CommonCollection}" AutoGenerateColumns="False" AllowDrop="False" CanUserAddRows="True" CanUserResizeColumns="False" Height="300">
+                    <DataGrid x:Name="DGItems" BorderThickness="1" CanUserSortColumns="False" ItemsSource="{Binding DGItemsCollection}" AutoGenerateColumns="False" AllowDrop="False" CanUserAddRows="True" CanUserResizeColumns="False" Height="300">
                         <DataGrid.Columns>
-                            <DataGridTextColumn Header="Item name" Binding="{Binding Name, UpdateSourceTrigger=PropertyChanged}" Width="Auto"/>
-                            <DataGridTextColumn Header="Max price" Binding="{Binding MaxPrice, UpdateSourceTrigger=PropertyChanged}" Width="Auto"/>
-                            <DataGridCheckBoxColumn Header="Stop on failed" Binding="{Binding StopOnFailed, UpdateSourceTrigger=PropertyChanged}"/>
+                            <DataGridTextColumn Header="Item names to hunt for" Binding="{Binding Name, UpdateSourceTrigger=PropertyChanged}" Width="Auto"/>
                         </DataGrid.Columns>
                     </DataGrid>
                 </StackPanel>
             </ScrollViewer>
         </TabItem>
-        <TabItem Header="Item types">
-            <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"></RowDefinition>
-                        <RowDefinition Height="Auto"></RowDefinition>
-                        <RowDefinition Height="Auto"></RowDefinition>
-                        <RowDefinition Height="Auto"></RowDefinition>
-                        <RowDefinition Height="Auto"></RowDefinition>
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
-                    <Label Grid.Row="0" Grid.Column="1" Content="Buy"></Label>
-                    <Label Grid.Row="0" Grid.Column="2" Content="Max Price"></Label>
-
-                    <Label Grid.Row="1" Grid.Column="0" Content="Amulet"/>
-                    <CheckBox Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" Margin="5" IsChecked="{Binding AmuletBuy, UpdateSourceTrigger=PropertyChanged}" />
-                    <TextBox Grid.Row="1" Grid.Column="2" VerticalAlignment="Center" Margin="5" Text="{Binding AmuletPrice, UpdateSourceTrigger=PropertyChanged}" />
-                    
-                    <Label Grid.Row="2" Grid.Column="0" Content="Ring"/>
-                    <CheckBox Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" Margin="5" IsChecked="{Binding RingBuy, UpdateSourceTrigger=PropertyChanged}" />
-                    <TextBox Grid.Row="2" Grid.Column="2" VerticalAlignment="Center" Margin="5" Text="{Binding RingPrice, UpdateSourceTrigger=PropertyChanged}" />
-                    
-                    <Label Grid.Row="3" Grid.Column="0" Content="Jewel"/>
-                    <CheckBox Grid.Row="3" Grid.Column="1" VerticalAlignment="Center" Margin="5" IsChecked="{Binding JewelBuy, UpdateSourceTrigger=PropertyChanged}" />
-                    <TextBox Grid.Row="3" Grid.Column="2" VerticalAlignment="Center" Margin="5" Text="{Binding JewelPrice, UpdateSourceTrigger=PropertyChanged}" />
-                    
-                    <Label Grid.Row="4" Grid.Column="0" Content="Map"/>
-                    <CheckBox Grid.Row="4" Grid.Column="1" VerticalAlignment="Center" Margin="5" IsChecked="{Binding MapBuy, UpdateSourceTrigger=PropertyChanged}" />
-                    <TextBox Grid.Row="4" Grid.Column="2" VerticalAlignment="Center" Margin="5" Text="{Binding MapPrice, UpdateSourceTrigger=PropertyChanged}" />
-
-
-                </Grid>
-            </ScrollViewer>
-        </TabItem>
         <TabItem Header="Offer history">
             <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-                <DataGrid Name="OfferHistory" ItemsSource="{Binding OfferCollection}"></DataGrid>
+                <DataGrid Name="OfferHistory" ItemsSource="{Binding Path=OfferCollection}"></DataGrid>
             </ScrollViewer>
         </TabItem>
     </TabControl>

@@ -13,6 +13,7 @@ using Loki.Game.Objects;
 using Buddy.Coroutines;
 using CadiroSniffer.Helpers;
 using CadiroSniffer.Classes;
+using Loki.Bot.Pathfinding;
 
 namespace CadiroSniffer
 {
@@ -26,6 +27,7 @@ namespace CadiroSniffer
         public string Version => "0.0.1.0";
 
         private bool _skip = false;
+        private Vector2i cadiroPos = Vector2i.Zero;
 
         #region Implementation of IRunnable
         
@@ -52,6 +54,7 @@ namespace CadiroSniffer
             if (type == "core_area_changed_event")
             {
                 _skip = false;
+                cadiroPos = Vector2i.Zero;
             }
 
             if (_skip)
@@ -63,96 +66,128 @@ namespace CadiroSniffer
             if (LokiPoe.Me.IsDead || LokiPoe.Me.IsInTown || LokiPoe.Me.IsInHideout)
                 return false;
 
-            var monsters = LokiPoe.ObjectManager.GetObjectsByType<Monster>().Where(m => !m.IsDead && m.IsHostile && m.Distance < 50).ToList();
-            if (monsters.Any())
+            //var monsters = LokiPoe.ObjectManager.GetObjectsByType<Monster>().Where(m => !m.IsDead && m.IsHostile && m.Distance < 50).ToList();
+            if (Lajt.NearMonsters())
                 return false;
 
             var cadiro = LokiPoe.ObjectManager.Objects.FirstOrDefault(o => o.Name.Equals("Cadiro Perandus"));
 
             if (cadiro != null)
             {
-                if (cadiro.Distance > 15)
+                if (cadiro.Distance > 25)
                 {
                     Log.DebugFormat($"[{Name}] Moving towards Cadiro.");
-                    await Navigation.MoveToLocation(cadiro.Position, 15, 15000, () => false);
+                    await Navigation.MoveToLocation(cadiro.Position, 25, 15000, 
+                        () => Lajt.NearMonsters());
                     return true;
                 }
 
                 await Coroutines.CloseBlockingWindows();
                 var res = await Coroutines.InteractWith(cadiro);
                 Log.ErrorFormat($"[{Name}] Interaction returned: {res}");
+                if (!res)
+                    return true;
                 
+                // click on cadiro offer in npc dialog
                 await Coroutine.Sleep(500);
-
                 LokiPoe.InGameState.NpcDialogUi.CadirosOffer();
-
                 await Coroutine.Sleep(500);
 
                 if (LokiPoe.InGameState.CadiroOfferUi.IsOpened)
                 {
+                    // get info about item
                     List<KeyValuePair<string, int>> lista;
                     bool canAfford;
                     var item = LokiPoe.InGameState.CadiroOfferUi.InventoryControl.Inventory.Items.FirstOrDefault();
                     LokiPoe.InGameState.CadiroOfferUi.GetItemCost(out lista, out canAfford);
                     var price = lista.Where(t => t.Key.Equals("Perandus Coin")).FirstOrDefault().Value;
 
-                    Log.ErrorFormat($"[{Name}] Cadiro's offer is ----> {item.StackCount}x {item.FullName} for {price} Perandus Coins.");
+                    Log.DebugFormat($"[{Name}] Cadiro's offer is ----> {item.StackCount}x {item.FullName} for {price} Perandus Coins.");
                     
-                    
+                    // we found cadiro in this instance so no reason to talk to him again
                     _skip = true;
 
-                    if (item.IsCurrencyType && canAfford)
-                    {
-                        LokiPoe.InGameState.CadiroOfferUi.Accept();
-                        _skip = true;
-                        Log.DebugFormat($"Purchase: > {item.StackCount}x {item.FullName} for {price} Perandus Coins.");
-                        if (CadiroSnifferSettings.Instance.NotifyCurrency)
-                        {
-                            // check if success by looking into inventory
-                            Alerter.Notify(item, price, Alerter.Status.Success);
-                        }
-                        return false;
-                    }
-                    var godlike = CadiroSnifferSettings.Instance.DGItemsCollection.Where(
-                        i => !string.IsNullOrEmpty(i.Name) && i.Name.Equals(item.FullName)).Any();
+                    bool shouldAccept = false;
+                    bool shouldStop = false;
+                    int maxPrice = 0;
+                    
+                    // check item list
+                    var pos = CadiroSnifferSettings.Instance.CommonCollection.Where(
+                            i => !string.IsNullOrEmpty(i.Name)
+                        && i.Name.Equals(item.FullName)).FirstOrDefault();
 
-                    if (godlike)
+                    if (pos != null)
                     {
-                        bool success = false;
-                        string status = "Bot stopped! Not enough coins. Come and get it!";
-                        if (canAfford)
+                        shouldAccept = true;
+                        shouldStop = pos.StopOnFailed;
+                        maxPrice = pos.MaxPrice;
+                    }
+
+                    if(item.IsCurrencyType && CadiroSnifferSettings.Instance.AutoCurrency)
+                    {
+                        shouldAccept = true;
+                    }
+
+                    // no specific items so check specific types
+                    if (!shouldAccept)
+                    {
+                       if(item.IsAmuletType && CadiroSnifferSettings.Instance.AmuletBuy)
+                        {
+                            maxPrice = CadiroSnifferSettings.Instance.AmuletPrice;
+                            shouldAccept = true;
+                        }
+                        if (item.IsRingType && CadiroSnifferSettings.Instance.RingBuy)
+                        {
+                            maxPrice = CadiroSnifferSettings.Instance.RingPrice;
+                            shouldAccept = true;
+                        }
+                        if (item.IsJewelType && CadiroSnifferSettings.Instance.JewelBuy)
+                        {
+                            maxPrice = CadiroSnifferSettings.Instance.JewelPrice;
+                            shouldAccept = true;
+                        }
+                        if (item.IsMapType && CadiroSnifferSettings.Instance.MapBuy)
+                        {
+                            maxPrice = CadiroSnifferSettings.Instance.MapPrice;
+                            shouldAccept = true;
+                        }
+                    }
+
+                    if (shouldAccept)
+                    {
+                        // check if enough space in inv
+                        // buy item, maxprice = 0 is unlimited
+                        if (canAfford && (price <= maxPrice || maxPrice == 0))
                         {
                             LokiPoe.InGameState.CadiroOfferUi.Accept();
-                            // check if success by looking into inventory
-                            success = true;
-                        }
-                        if (success)
-                        {
-                            if (CadiroSnifferSettings.Instance.NotifyGodlike)
-                            {
-                                status = "Successfuly purchased!";
-                                Log.DebugFormat($"{item.FullName} {status}");
-                                Alerter.Notify(item, price, Alerter.Status.Success, true);
-                            }
-                            _skip = true;
+                            await Coroutine.Sleep(100);
+                            LokiPoe.InGameState.NpcDialogUi.Continue();
+                            // check if success
+                            Alerter.Notify(item, price, Alerter.Status.Success);
+
                             return false;
                         }
                         else
                         {
-                            Log.DebugFormat($"{item.FullName} {status}");
-                            Alerter.Notify(item, price, Alerter.Status.Stop, true);
-                            BotManager.Stop();
-                            return false;
+                            if (shouldStop)
+                            {
+                                Alerter.Notify(item, price, Alerter.Status.Stop);
+                                BotManager.Stop();
+                                return false;
+                            }
                         }
-
-                    }
-                    if (CadiroSnifferSettings.Instance.NotifyAll)
-                    {
-                        Alerter.Notify(item, price, Alerter.Status.Info);
                     }
 
+                    Alerter.Notify(item, price, Alerter.Status.Info);
+
+                    //Decline trade
                     LokiPoe.InGameState.CadiroOfferUi.Decline();
-
+                    _skip = true;
+                    await Coroutine.Sleep(100);
+                    if (LokiPoe.InGameState.CadiroOfferUi.IsOpened)
+                    {
+                        await Coroutines.CloseBlockingWindows();
+                    }
                 }
                 else
                 {
@@ -160,10 +195,18 @@ namespace CadiroSniffer
                     return true;
                 }
             }
+            else if(cadiroPos != Vector2i.Zero)
+            {
+                // no cadiro in our sight so move to place where we first seen him
+                await Navigation.MoveToLocation(ExilePather.FastWalkablePositionFor(cadiroPos),25,50000,
+                    () => Lajt.NearMonsters());
+                return true;
+            }
 
             return false;
         }
 
+        
         public object Execute(string name, params dynamic[] param)
         {
             return null;

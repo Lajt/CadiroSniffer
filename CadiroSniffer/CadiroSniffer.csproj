@@ -130,11 +130,13 @@
     <Compile Include="CadiroOfferTask.cs" />
     <Compile Include="CadiroSniffer.cs" />
     <Compile Include="CadiroSnifferSettings.cs" />
+    <Compile Include="Classes\Common.cs" />
     <Compile Include="Classes\Offer.cs" />
     <Compile Include="Gui.xaml.cs">
       <DependentUpon>Gui.xaml</DependentUpon>
     </Compile>
     <Compile Include="Helpers\Alerter.cs" />
+    <Compile Include="Helpers\Lajt.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -20,10 +20,6 @@ namespace CadiroSniffer
             {
                 DGItemsCollection = new ObservableCollection<StringEntry>();
             }
-            if(CommonCollection == null)
-            {
-                CommonCollection = new ObservableCollection<Common>();
-            }
             if(OfferCollection == null)
             {
                 OfferCollection = new ObservableCollection<Offer>();
@@ -40,23 +36,11 @@ namespace CadiroSniffer
         private bool _pushbulletEnabled;
         private bool _prowlEnabled;
 
-        private bool _notifySuccess;
-        private bool _notifyBotStop;
+        private bool _notifyGodlike;
+        private bool _notifyCurrency;
         private bool _notifyAll; // other
 
-        private bool _autoCurrency;
-
-        private bool _amuletBuy;
-        private int _amuletPrice;
-        private bool _ringBuy;
-        private int _ringPrice;
-        private bool _jewelBuy;
-        private int _jewelPrice;
-        private bool _mapBuy;
-        private int _mapPrice;
-
         private ObservableCollection<Offer> _offerCollection;
-        private ObservableCollection<Common> _commonCollection;
 
         [JsonIgnore]
         public ObservableCollection<Offer> OfferCollection
@@ -77,17 +61,6 @@ namespace CadiroSniffer
             {
                 _DGItemsCollection = value;
                 NotifyPropertyChanged(() => DGItemsCollection);
-            }
-        }
-
-        [DefaultValue(null)]
-        public ObservableCollection<Common> CommonCollection
-        {
-            get { return _commonCollection; }
-            set
-            {
-                _commonCollection = value;
-                NotifyPropertyChanged(() => CommonCollection);
             }
         }
 
@@ -169,24 +142,24 @@ namespace CadiroSniffer
         }
 
         [DefaultValue(true)]
-        public bool NotifySuccess
+        public bool NotifyGodlike
         {
-            get { return _notifySuccess; }
+            get { return _notifyGodlike; }
             set
             {
-                _notifySuccess = value;
-                NotifyPropertyChanged(() => NotifySuccess);
+                _notifyGodlike = value;
+                NotifyPropertyChanged(() => NotifyGodlike);
             }
         }
 
         [DefaultValue(true)]
-        public bool NotifyBotStop
+        public bool NotifyCurrency
         {
-            get { return _notifyBotStop; }
+            get { return _notifyCurrency; }
             set
             {
-                _notifyBotStop = value;
-                NotifyPropertyChanged(() => _notifyBotStop);
+                _notifyCurrency = value;
+                NotifyPropertyChanged(() => NotifyCurrency);
             }
         }
 
@@ -198,105 +171,6 @@ namespace CadiroSniffer
             {
                 _notifyAll = value;
                 NotifyPropertyChanged(() => NotifyAll);
-            }
-        }
-
-        [DefaultValue(true)]
-        public bool AutoCurrency
-        {
-            get { return _autoCurrency; }
-            set
-            {
-                _autoCurrency = value;
-                NotifyPropertyChanged(() => AutoCurrency);
-            }
-        }
-
-        [DefaultValue(false)]
-        public bool AmuletBuy
-        {
-            get { return _amuletBuy; }
-            set
-            {
-                _amuletBuy = value;
-                NotifyPropertyChanged(() => AmuletBuy);
-            }
-        }
-
-        [DefaultValue(0)]
-        public int AmuletPrice
-        {
-            get { return _amuletPrice; }
-            set
-            {
-                _amuletPrice = value;
-                NotifyPropertyChanged(() => AmuletPrice);
-            }
-        }
-
-        [DefaultValue(false)]
-        public bool RingBuy
-        {
-            get { return _ringBuy; }
-            set
-            {
-                _ringBuy = value;
-                NotifyPropertyChanged(() => RingBuy);
-            }
-        }
-
-        [DefaultValue(0)]
-        public int RingPrice
-        {
-            get { return _ringPrice; }
-            set
-            {
-                _ringPrice = value;
-                NotifyPropertyChanged(() => RingPrice);
-            }
-        }
-
-        [DefaultValue(false)]
-        public bool JewelBuy
-        {
-            get { return _jewelBuy; }
-            set
-            {
-                _jewelBuy = value;
-                NotifyPropertyChanged(() => JewelBuy);
-            }
-        }
-
-        [DefaultValue(0)]
-        public int JewelPrice
-        {
-            get { return _jewelPrice; }
-            set
-            {
-                _jewelPrice = value;
-                NotifyPropertyChanged(() => JewelPrice);
-            }
-        }
-
-        [DefaultValue(false)]
-        public bool MapBuy
-        {
-            get { return _mapBuy; }
-            set
-            {
-                _mapBuy = value;
-                NotifyPropertyChanged(() => MapBuy);
-            }
-        }
-
-        [DefaultValue(0)]
-        public int MapPrice
-        {
-            get { return _mapPrice; }
-            set
-            {
-                _mapPrice = value;
-                NotifyPropertyChanged(() => MapPrice);
             }
         }
 
