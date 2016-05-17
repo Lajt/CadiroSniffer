@@ -40,9 +40,13 @@ namespace CadiroSniffer
         private bool _pushbulletEnabled;
         private bool _prowlEnabled;
 
-        private bool _notifySuccess;
-        private bool _notifyBotStop;
-        private bool _notifyAll; // other
+        private bool _mobileNotifySuccess;
+        private bool _mobileNotifyBotStop;
+        private bool _mobileNotifyAll; // other
+
+        private bool _soundNotifySuccess;
+        private bool _soundNotifyBotStop;
+        private bool _soundNotifyAll;
 
         private bool _autoCurrency;
 
@@ -168,36 +172,69 @@ namespace CadiroSniffer
             }
         }
 
-        [DefaultValue(true)]
-        public bool NotifySuccess
+        [DefaultValue(false)]
+        public bool MobileNotifySuccess
         {
-            get { return _notifySuccess; }
+            get { return _mobileNotifySuccess; }
             set
             {
-                _notifySuccess = value;
-                NotifyPropertyChanged(() => NotifySuccess);
-            }
-        }
-
-        [DefaultValue(true)]
-        public bool NotifyBotStop
-        {
-            get { return _notifyBotStop; }
-            set
-            {
-                _notifyBotStop = value;
-                NotifyPropertyChanged(() => _notifyBotStop);
+                _mobileNotifySuccess = value;
+                NotifyPropertyChanged(() => MobileNotifySuccess);
             }
         }
 
         [DefaultValue(false)]
-        public bool NotifyAll
+        public bool MobileNotifyBotStop
         {
-            get { return _notifyAll; }
+            get { return _mobileNotifyBotStop; }
             set
             {
-                _notifyAll = value;
-                NotifyPropertyChanged(() => NotifyAll);
+                _mobileNotifyBotStop = value;
+                NotifyPropertyChanged(() => MobileNotifyBotStop);
+            }
+        }
+
+        [DefaultValue(false)]
+        public bool MobileNotifyAll
+        {
+            get { return _mobileNotifyAll; }
+            set
+            {
+                _mobileNotifyAll = value;
+                NotifyPropertyChanged(() => MobileNotifyAll);
+            }
+        }
+
+        [DefaultValue(false)]
+        public bool SoundNotifySuccess
+        {
+            get { return _soundNotifySuccess; }
+            set
+            {
+                _soundNotifySuccess = value;
+                NotifyPropertyChanged(() => SoundNotifySuccess);
+            }
+        }
+
+        [DefaultValue(false)]
+        public bool SoundNotifyBotStop
+        {
+            get { return _soundNotifyBotStop; }
+            set
+            {
+                _soundNotifyBotStop = value;
+                NotifyPropertyChanged(() => SoundNotifyBotStop);
+            }
+        }
+
+        [DefaultValue(false)]
+        public bool SoundNotifyAll
+        {
+            get { return _soundNotifyBotStop; }
+            set
+            {
+                _soundNotifyBotStop = value;
+                NotifyPropertyChanged(() => SoundNotifyBotStop);
             }
         }
 

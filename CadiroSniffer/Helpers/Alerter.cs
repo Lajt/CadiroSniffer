@@ -8,6 +8,9 @@ using Loki.Game.Objects;
 using CadiroSniffer.Classes;
 using Exilebuddy;
 using Loki.Game;
+using System.Media;
+using System.IO;
+using Loki.Bot;
 
 namespace CadiroSniffer.Helpers
 {
@@ -62,15 +65,37 @@ namespace CadiroSniffer.Helpers
             
         }
 
+        public static void PlaySound(string sound)
+        {
+            // success + stop + all
+            sound = sound + ".wav";
+            var path = Path.Combine(ThirdPartyLoader.GetInstance("CadiroSniffer").ContentPath, "Sounds");
+            path = Path.Combine(path, sound);
+            if (File.Exists(path))
+            {
+                CadiroSniffer.Log.DebugFormat($"[CadiroSniffer] Trying to play {sound} sound...");
+                var sp = new SoundPlayer(path);
+                sp.Play();
+            }
+            CadiroSniffer.Log.ErrorFormat($"[CadiroSniffer] {sound} file dosent exist.");
+            CadiroSniffer.Log.ErrorFormat($"[CadiroSniffer] Full path: {path}");
+        }
+
         public static void Notify(Item item, int price, Status status)
         {
+            CadiroSniffer.Log.DebugFormat("Starting Notify...");
+
             string temp = $"{item.StackCount}x {item.FullName} for {price} Perandus coins.";
             string st = status.ToString();
             string offerResult = "Declined";
             bool mobileNotify = false;
+            string soundNotify = "";
 
-            if (CadiroSnifferSettings.Instance.NotifyAll)
+            if (CadiroSnifferSettings.Instance.MobileNotifyAll)
                 mobileNotify = true;
+
+            if (CadiroSnifferSettings.Instance.SoundNotifyAll)
+                soundNotify = "all";
 
             switch (status)
             {
@@ -80,22 +105,26 @@ namespace CadiroSniffer.Helpers
                 case Status.Success:
                     temp = $"Successfully purchased: {temp}";
                     offerResult = "Accepted";
-                    if (CadiroSnifferSettings.Instance.NotifySuccess)
+                    if (CadiroSnifferSettings.Instance.MobileNotifySuccess)
                         mobileNotify = true;
+                    if (CadiroSnifferSettings.Instance.SoundNotifySuccess)
+                        soundNotify = "success";
                     break;
                 case Status.Failed:
                     temp = $"Purchase failed: {temp}";
                     break;
                 case Status.Stop:
                     temp = $"Bot stopped! Offer: {temp}";
-                    if (CadiroSnifferSettings.Instance.NotifyBotStop)
+                    if (CadiroSnifferSettings.Instance.MobileNotifyBotStop)
                         mobileNotify = true;
+                    if (CadiroSnifferSettings.Instance.SoundNotifyBotStop)
+                        soundNotify = "stop";
                     break;
 
             }
 
             // add offer info to offer history
-            App.Current.Dispatcher.Invoke((Action)delegate
+                App.Current.Dispatcher.Invoke((Action)delegate
             {
                 CadiroSnifferSettings.Instance.OfferCollection.Add(
                     new Offer()
@@ -112,6 +141,8 @@ namespace CadiroSniffer.Helpers
 
             if(MobileEnabled && mobileNotify)
                 SendNotification(temp, st);
+            if (!string.IsNullOrEmpty(soundNotify))
+                PlaySound(soundNotify);
         }
 
         public enum Status

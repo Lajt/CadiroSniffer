@@ -20,7 +20,7 @@ namespace CadiroSniffer
         public string Name => "CadiroSniffer";
         public string Description => "Sniff that godly offers.";
         public string Author => "Lajt";
-        public string Version => "0.0.1.0";
+        public string Version => "0.0.9.0";
         
         #region Implementation of IBase
 

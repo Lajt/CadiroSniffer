@@ -26,14 +26,28 @@
                                 <RowDefinition Height="Auto"></RowDefinition>
                                 <RowDefinition Height="Auto"></RowDefinition>
                                 <RowDefinition Height="Auto"></RowDefinition>
+                                <RowDefinition Height="Auto"></RowDefinition>
                             </Grid.RowDefinitions>
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto" MinWidth="150"></ColumnDefinition>
+                                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                <ColumnDefinition Width="Auto"></ColumnDefinition>
                             </Grid.ColumnDefinitions>
-                            <CheckBox Grid.Row="0" Grid.Column="0" Margin="5" Content="Notify Success" IsChecked="{Binding Path=NotifySuccess, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                            <CheckBox Grid.Row="1" Grid.Column="0" Margin="5" Content="Notify Bot stop" IsChecked="{Binding Path=NotifyBotStop, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                            <CheckBox Grid.Row="2" Grid.Column="0" Margin="5" Content="Notify all offers" IsChecked="{Binding Path=NotifyAll, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
+                            <Label Grid.Row="0" Grid.Column="1" Margin="5" HorizontalContentAlignment="Center" Content="Mobile"/>
+                            <Label Grid.Row="0" Grid.Column="2" Margin="5" HorizontalContentAlignment="Center" Content="Sound"/>
+
+                            <Label Grid.Row="1" Grid.Column="0" Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" Content="Success"/>
+                            <Label Grid.Row="2" Grid.Column="0" Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" Content="Stop"/>
+                            <Label Grid.Row="3" Grid.Column="0" Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" Content="All"/>
+
+                            <CheckBox Grid.Row="1" Grid.Column="1" Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center"  IsChecked="{Binding Path=MobileNotifySuccess, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                            <CheckBox Grid.Row="2" Grid.Column="1" Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center"  IsChecked="{Binding Path=MobileNotifyBotStop, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                            <CheckBox Grid.Row="3" Grid.Column="1" Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center"  IsChecked="{Binding Path=MobileNotifyAll, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                            
+                            <CheckBox Grid.Row="1" Grid.Column="2" Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center"  IsChecked="{Binding Path=SoundNotifySuccess, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                            <CheckBox Grid.Row="2" Grid.Column="2" Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center"  IsChecked="{Binding Path=SoundNotifyBotStop, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                            <CheckBox Grid.Row="3" Grid.Column="2" Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center"  IsChecked="{Binding Path=SoundNotifyAll, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                         </Grid>
                     </Expander>
                     <Expander Header="Mobile settings" Grid.Row="2" Margin="5">

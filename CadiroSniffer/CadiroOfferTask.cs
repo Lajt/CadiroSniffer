@@ -24,7 +24,7 @@ namespace CadiroSniffer
         public string Name => "CadiroOfferTask";
         public string Description => "Sniff that godly offers.";
         public string Author => "Lajt";
-        public string Version => "0.0.1.0";
+        public string Version => "0.0.9.0";
 
         private bool _skip = false;
         private Vector2i cadiroPos = Vector2i.Zero;
