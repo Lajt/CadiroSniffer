@@ -99,6 +99,8 @@ namespace CadiroSniffer
                     List<KeyValuePair<string, int>> lista;
                     bool canAfford;
                     var item = LokiPoe.InGameState.CadiroOfferUi.InventoryControl.Inventory.Items.FirstOrDefault();
+                    // temp fix because item.StackCount isnt accesable after purchase
+                    int stackCount = item.StackCount;
                     LokiPoe.InGameState.CadiroOfferUi.GetItemCost(out lista, out canAfford);
                     var price = lista.Where(t => t.Key.Equals("Perandus Coin")).FirstOrDefault().Value;
 
@@ -169,7 +171,7 @@ namespace CadiroSniffer
                             await Coroutine.Sleep(100);
                             LokiPoe.InGameState.NpcDialogUi.Continue();
                             // check if success
-                            Alerter.Notify(item, price, Alerter.Status.Success);
+                            Alerter.Notify(item, price, Alerter.Status.Success, stackCount);
                             Log.DebugFormat($"[{Name}] Item should be purchased at this state.");
                             return false;
                         }
@@ -177,7 +179,7 @@ namespace CadiroSniffer
                         {
                             if (shouldStop)
                             {
-                                Alerter.Notify(item, price, Alerter.Status.Stop);
+                                Alerter.Notify(item, price, Alerter.Status.Stop, stackCount);
                                 Log.DebugFormat($"[{Name}] Stopping bot... We found specific item: {item.FullName}");
                                 BotManager.Stop();
                                 return false;
@@ -185,7 +187,7 @@ namespace CadiroSniffer
                         }
                     }
 
-                    Alerter.Notify(item, price, Alerter.Status.Info);
+                    Alerter.Notify(item, price, Alerter.Status.Info, stackCount);
 
                     Log.DebugFormat($"[{Name}] Trying to decline trade...");
                     //Decline trade

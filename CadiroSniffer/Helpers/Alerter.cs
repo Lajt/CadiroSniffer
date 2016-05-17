@@ -81,11 +81,11 @@ namespace CadiroSniffer.Helpers
             CadiroSniffer.Log.ErrorFormat($"[CadiroSniffer] Full path: {path}");
         }
 
-        public static void Notify(Item item, int price, Status status)
+        public static void Notify(Item item, int price, Status status, int stackCount = 1)
         {
             CadiroSniffer.Log.DebugFormat("Starting Notify...");
 
-            string temp = $"{item.StackCount}x {item.FullName} for {price} Perandus coins.";
+            string temp = $"{stackCount}x {item.FullName} for {price} Perandus coins.";
             string st = status.ToString();
             string offerResult = "Declined";
             bool mobileNotify = false;
@@ -132,7 +132,7 @@ namespace CadiroSniffer.Helpers
                         timeOfOffer = DateTime.Now,
                         itemName = item.FullName,
                         price = price,
-                        qty = item.StackCount,
+                        qty = stackCount,
                         status = st,
                         result = offerResult,
                         location = LokiPoe.LocalData.WorldArea.Name
