@@ -11,16 +11,16 @@ using Loki.Game;
 using CommunityLib;
 using Loki.Game.Objects;
 
-namespace CadiroSniffer
+namespace MirrorQuest
 {
-    public class CadiroSniffer : IPlugin
+    public class MirrorQuest : IPlugin
     {
         public static readonly ILog Log = Logger.GetLoggerInstanceForType();
 
-        public string Name => "CadiroSniffer";
-        public string Description => "Sniff that godly offers.";
+        public string Name => "MirrorQuest";
+        public string Description => "Quest to find Mirror.";
         public string Author => "Lajt";
-        public string Version => "0.0.9.0";
+        public string Version => "0.0.9.3";
         
         #region Implementation of IBase
 
@@ -41,7 +41,7 @@ namespace CadiroSniffer
         #region Implementation of IConfigurable
 
         /// <summary>The settings object. This will be registered in the current configuration.</summary>
-        public JsonSettings Settings => CadiroSnifferSettings.Instance;
+        public JsonSettings Settings => MirrorQuestSettings.Instance;
 
 
         /// <summary> The plugin's settings control. This will be added to the Exilebuddy Settings tab.</summary>

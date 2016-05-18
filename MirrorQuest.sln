@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CadiroSniffer", "CadiroSniffer\CadiroSniffer.csproj", "{5BFCA4B2-A5A8-4A69-8E3C-E42DF8FED56E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MirrorQuest", "MirrorQuest\MirrorQuest.csproj", "{5BFCA4B2-A5A8-4A69-8E3C-E42DF8FED56E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

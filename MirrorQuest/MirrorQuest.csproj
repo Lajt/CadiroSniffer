@@ -7,8 +7,8 @@
     <ProjectGuid>{5BFCA4B2-A5A8-4A69-8E3C-E42DF8FED56E}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>CadiroSniffer</RootNamespace>
-    <AssemblyName>CadiroSniffer</AssemblyName>
+    <RootNamespace>MirrorQuest</RootNamespace>
+    <AssemblyName>MirrorQuest</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -72,6 +72,9 @@
     <Compile Include="..\..\..\TestingUnit\3rdParty\CommunityLib\Areas.cs">
       <Link>CommunityLib\Areas.cs</Link>
     </Compile>
+    <Compile Include="..\..\..\TestingUnit\3rdParty\CommunityLib\AreaStateCache.cs">
+      <Link>CommunityLib\AreaStateCache.cs</Link>
+    </Compile>
     <Compile Include="..\..\..\TestingUnit\3rdParty\CommunityLib\CachedItemObject.cs">
       <Link>CommunityLib\CachedItemObject.cs</Link>
     </Compile>
@@ -128,13 +131,13 @@
       <Link>CommunityLib\Utility.cs</Link>
     </Compile>
     <Compile Include="CadiroOfferTask.cs" />
-    <Compile Include="CadiroSniffer.cs" />
-    <Compile Include="CadiroSnifferSettings.cs" />
-    <Compile Include="Classes\Common.cs" />
-    <Compile Include="Classes\Offer.cs" />
     <Compile Include="Gui.xaml.cs">
       <DependentUpon>Gui.xaml</DependentUpon>
     </Compile>
+    <Compile Include="MirrorQuest.cs" />
+    <Compile Include="MirrorQuesttSettings.cs" />
+    <Compile Include="Classes\Common.cs" />
+    <Compile Include="Classes\Offer.cs" />
     <Compile Include="Helpers\Alerter.cs" />
     <Compile Include="Helpers\Lajt.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -151,12 +154,15 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Sounds\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="..\..\..\TestingUnit\3rdParty\CommunityLib\3rdparty-required.txt">
+      <Link>CommunityLib\3rdparty-required.txt</Link>
+    </Content>
     <Content Include="..\..\..\TestingUnit\3rdParty\CommunityLib\3rdParty.txt">
       <Link>CommunityLib\3rdParty.txt</Link>
     </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Sounds\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

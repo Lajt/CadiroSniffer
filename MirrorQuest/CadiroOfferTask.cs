@@ -11,20 +11,20 @@ using Loki.Game;
 using CommunityLib;
 using Loki.Game.Objects;
 using Buddy.Coroutines;
-using CadiroSniffer.Helpers;
-using CadiroSniffer.Classes;
+using MirrorQuest.Helpers;
+using MirrorQuest.Classes;
 using Loki.Bot.Pathfinding;
 
-namespace CadiroSniffer
+namespace MirrorQuest
 {
     class CadiroOfferTask : ITask
     {
         private static readonly ILog Log = Logger.GetLoggerInstanceForType();
 
         public string Name => "CadiroOfferTask";
-        public string Description => "Sniff that godly offers.";
+        public string Description => "Task to handle Cadiro offers.";
         public string Author => "Lajt";
-        public string Version => "0.0.9.0";
+        public string Version => "0.0.9.3";
 
         private bool _skip = false;
         private Vector2i cadiroPos = Vector2i.Zero;
@@ -77,7 +77,7 @@ namespace CadiroSniffer
                 if (cadiro.Distance > 25)
                 {
                     Log.DebugFormat($"[{Name}] Moving towards Cadiro.");
-                    await Navigation.MoveToLocation(cadiro.Position, 25, 15000, 
+                    await Navigation.MoveToLocation(cadiro.Position, 25, 10000, 
                         () => Lajt.NearMonsters());
                     return true;
                 }
@@ -87,11 +87,11 @@ namespace CadiroSniffer
                 Log.DebugFormat($"[{Name}] Interaction returned: {res}");
                 if (!res)
                     return true;
-                
+
                 // click on cadiro offer in npc dialog
-                await Coroutine.Sleep(500);
+                await Coroutines.LatencyWait(5);
                 LokiPoe.InGameState.NpcDialogUi.CadirosOffer();
-                await Coroutine.Sleep(500);
+                await Coroutines.LatencyWait(5);
 
                 if (LokiPoe.InGameState.CadiroOfferUi.IsOpened)
                 {
@@ -99,22 +99,19 @@ namespace CadiroSniffer
                     List<KeyValuePair<string, int>> lista;
                     bool canAfford;
                     var item = LokiPoe.InGameState.CadiroOfferUi.InventoryControl.Inventory.Items.FirstOrDefault();
-                    // temp fix because item.StackCount isnt accesable after purchase
+                    // item.StackCount isnt accesable after purchase so cache that info into var
                     int stackCount = item.StackCount;
                     LokiPoe.InGameState.CadiroOfferUi.GetItemCost(out lista, out canAfford);
                     var price = lista.Where(t => t.Key.Equals("Perandus Coin")).FirstOrDefault().Value;
 
                     Log.DebugFormat($"[{Name}] Cadiro's offer is ----> {item.StackCount}x {item.FullName} for {price} Perandus Coins.");
                     
-                    // we found cadiro in this instance so no reason to talk to him again
-                    _skip = true;
-
                     bool shouldAccept = false;
                     bool shouldStop = false;
                     int maxPrice = 0;
                     
                     // check item list
-                    var pos = CadiroSnifferSettings.Instance.CommonCollection.Where(
+                    var pos = MirrorQuestSettings.Instance.CommonCollection.Where(
                             i => !string.IsNullOrEmpty(i.Name)
                         && i.Name.Equals(item.FullName)).FirstOrDefault();
 
@@ -126,7 +123,7 @@ namespace CadiroSniffer
                         maxPrice = pos.MaxPrice;
                     }
 
-                    if(item.IsCurrencyType && CadiroSnifferSettings.Instance.AutoCurrency)
+                    if(item.IsCurrencyType && MirrorQuestSettings.Instance.AutoCurrency)
                     {
                         Log.DebugFormat($"[{Name}] Item is currency and autobuy is enabled.");
                         shouldAccept = true;
@@ -136,24 +133,24 @@ namespace CadiroSniffer
                     if (!shouldAccept)
                     {
                         Log.DebugFormat($"[{Name}] Checking for specific types.");
-                        if (item.IsAmuletType && CadiroSnifferSettings.Instance.AmuletBuy)
+                        if (item.IsAmuletType && MirrorQuestSettings.Instance.AmuletBuy)
                         {
-                            maxPrice = CadiroSnifferSettings.Instance.AmuletPrice;
+                            maxPrice = MirrorQuestSettings.Instance.AmuletPrice;
                             shouldAccept = true;
                         }
-                        if (item.IsRingType && CadiroSnifferSettings.Instance.RingBuy)
+                        if (item.IsRingType && MirrorQuestSettings.Instance.RingBuy)
                         {
-                            maxPrice = CadiroSnifferSettings.Instance.RingPrice;
+                            maxPrice = MirrorQuestSettings.Instance.RingPrice;
                             shouldAccept = true;
                         }
-                        if (item.IsJewelType && CadiroSnifferSettings.Instance.JewelBuy)
+                        if (item.IsJewelType && MirrorQuestSettings.Instance.JewelBuy)
                         {
-                            maxPrice = CadiroSnifferSettings.Instance.JewelPrice;
+                            maxPrice = MirrorQuestSettings.Instance.JewelPrice;
                             shouldAccept = true;
                         }
-                        if (item.IsMapType && CadiroSnifferSettings.Instance.MapBuy)
+                        if (item.IsMapType && MirrorQuestSettings.Instance.MapBuy)
                         {
-                            maxPrice = CadiroSnifferSettings.Instance.MapPrice;
+                            maxPrice = MirrorQuestSettings.Instance.MapPrice;
                             shouldAccept = true;
                         }
                         if(shouldAccept)
@@ -162,17 +159,20 @@ namespace CadiroSniffer
 
                     if (shouldAccept)
                     {
-                        // check if enough space in inv
+                        // check if space in inventory
+                        var freeSpace = LokiPoe.InGameState.InventoryUi.InventoryControl_Main.Inventory.CanFitItem(item);
+
                         // buy item, maxprice = 0 is unlimited
                         Log.DebugFormat($"[{Name}] Trying to buy: {item.FullName}");
-                        if (canAfford && (price <= maxPrice || maxPrice == 0))
+                        if (canAfford && (price <= maxPrice || maxPrice == 0) && freeSpace)
                         {
                             LokiPoe.InGameState.CadiroOfferUi.Accept();
-                            await Coroutine.Sleep(100);
+                            await Coroutines.LatencyWait(2);
                             LokiPoe.InGameState.NpcDialogUi.Continue();
-                            // check if success
+
                             Alerter.Notify(item, price, Alerter.Status.Success, stackCount);
                             Log.DebugFormat($"[{Name}] Item should be purchased at this state.");
+                            
                             return false;
                         }
                         else
@@ -190,15 +190,17 @@ namespace CadiroSniffer
                     Alerter.Notify(item, price, Alerter.Status.Info, stackCount);
 
                     Log.DebugFormat($"[{Name}] Trying to decline trade...");
-                    //Decline trade
                     LokiPoe.InGameState.CadiroOfferUi.Decline();
+
+                    // Skip cadiro in this instance because we don't need to interact with him anymore
                     _skip = true;
                     await Coroutines.ReactionWait();
+
                     while(LokiPoe.InGameState.CadiroOfferUi.IsOpened)
                     {
                         Log.ErrorFormat($"[{Name}] Cadiro window is still open.");
                         LokiPoe.InGameState.CadiroOfferUi.Decline();
-                        await Coroutine.Sleep(200);
+                        await Coroutines.LatencyWait(2);
                     }
                     Log.DebugFormat($"[{Name}] Cadiro trade window closed.");
                 }

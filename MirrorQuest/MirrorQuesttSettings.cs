@@ -3,23 +3,19 @@ using System.ComponentModel;
 using Loki;
 using Loki.Common;
 using Newtonsoft.Json;
-using CadiroSniffer.Classes;
+using MirrorQuest.Classes;
 
-namespace CadiroSniffer
+namespace MirrorQuest
 {
-    class CadiroSnifferSettings : JsonSettings
+    class MirrorQuestSettings : JsonSettings
     {
-        private static CadiroSnifferSettings _instance;
+        private static MirrorQuestSettings _instance;
 
-        public static CadiroSnifferSettings Instance => _instance ?? (_instance = new CadiroSnifferSettings());
+        public static MirrorQuestSettings Instance => _instance ?? (_instance = new MirrorQuestSettings());
 
-        public CadiroSnifferSettings()
-            : base(GetSettingsFilePath(Configuration.Instance.Name, string.Format("{0}.json", "CadiroSniffer")))
+        public MirrorQuestSettings()
+            : base(GetSettingsFilePath(Configuration.Instance.Name, string.Format("{0}.json", "MirrorQuest")))
         {
-            if(DGItemsCollection == null)
-            {
-                DGItemsCollection = new ObservableCollection<StringEntry>();
-            }
             if(CommonCollection == null)
             {
                 CommonCollection = new ObservableCollection<Common>();
@@ -29,8 +25,7 @@ namespace CadiroSniffer
                 OfferCollection = new ObservableCollection<Offer>();
             }
         }
-
-        private ObservableCollection<StringEntry> _DGItemsCollection;
+        
         private string _pushoverUserKey;
         private string _pushoverApiKey;
         private string _pushbulletKey;
@@ -70,17 +65,6 @@ namespace CadiroSniffer
             {
                 _offerCollection = value;
                 NotifyPropertyChanged(() => OfferCollection);
-            }
-        }
-
-        [DefaultValue(null)]
-        public ObservableCollection<StringEntry> DGItemsCollection
-        {
-            get { return _DGItemsCollection; }
-            set
-            {
-                _DGItemsCollection = value;
-                NotifyPropertyChanged(() => DGItemsCollection);
             }
         }
 
@@ -230,11 +214,11 @@ namespace CadiroSniffer
         [DefaultValue(false)]
         public bool SoundNotifyAll
         {
-            get { return _soundNotifyBotStop; }
+            get { return _soundNotifyAll; }
             set
             {
-                _soundNotifyBotStop = value;
-                NotifyPropertyChanged(() => SoundNotifyBotStop);
+                _soundNotifyAll = value;
+                NotifyPropertyChanged(() => SoundNotifyAll);
             }
         }
 

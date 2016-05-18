@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace CadiroSniffer
+namespace MirrorQuest
 {
     /// <summary>
     /// Interaction logic for Gui.xaml
@@ -23,8 +23,7 @@ namespace CadiroSniffer
         public Gui()
         {
             InitializeComponent();
-            DataContext = CadiroSnifferSettings.Instance;
-
+            DataContext = MirrorQuestSettings.Instance;
         }
     }
 }

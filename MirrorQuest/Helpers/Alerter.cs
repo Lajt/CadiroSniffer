@@ -5,62 +5,62 @@ using System.Text;
 using System.Threading.Tasks;
 using CommunityLib;
 using Loki.Game.Objects;
-using CadiroSniffer.Classes;
+using MirrorQuest.Classes;
 using Exilebuddy;
 using Loki.Game;
 using System.Media;
 using System.IO;
 using Loki.Bot;
 
-namespace CadiroSniffer.Helpers
+namespace MirrorQuest.Helpers
 {
     public static class Alerter
     {
         public static bool MobileEnabled => 
-            CadiroSnifferSettings.Instance.PushoverEnabled || 
-            CadiroSnifferSettings.Instance.PushbulletEnabled || 
-            CadiroSnifferSettings.Instance.ProwlEnabled;
+            MirrorQuestSettings.Instance.PushoverEnabled || 
+            MirrorQuestSettings.Instance.PushbulletEnabled || 
+            MirrorQuestSettings.Instance.ProwlEnabled;
 
         public static void SendNotification(string text, string title = "Cadiro call")
         {
-            if(CadiroSnifferSettings.Instance.PushoverEnabled && 
-                !string.IsNullOrWhiteSpace(CadiroSnifferSettings.Instance.PushoverApiKey) &&
-                !string.IsNullOrWhiteSpace(CadiroSnifferSettings.Instance.PushoverUserKey))
+            if(MirrorQuestSettings.Instance.PushoverEnabled && 
+                !string.IsNullOrWhiteSpace(MirrorQuestSettings.Instance.PushoverApiKey) &&
+                !string.IsNullOrWhiteSpace(MirrorQuestSettings.Instance.PushoverUserKey))
             {
                 var req = Notifications.Pushover(
-                            CadiroSnifferSettings.Instance.PushoverApiKey,
-                            CadiroSnifferSettings.Instance.PushoverUserKey,
+                            MirrorQuestSettings.Instance.PushoverApiKey,
+                            MirrorQuestSettings.Instance.PushoverUserKey,
                             text,
                             title,
                             Notifications.NotificationPriority.Normal);
 
                 if (req != Results.NotificationResult.None)
-                    CadiroSniffer.Log.ErrorFormat($"[CadiroSniffer] Network Error: {req}");
+                    MirrorQuest.Log.ErrorFormat($"[MirrorQuest] Network Error: {req}");
             }
 
-            if(CadiroSnifferSettings.Instance.PushbulletEnabled && 
-                !string.IsNullOrWhiteSpace(CadiroSnifferSettings.Instance.PushbulletKey))
+            if(MirrorQuestSettings.Instance.PushbulletEnabled && 
+                !string.IsNullOrWhiteSpace(MirrorQuestSettings.Instance.PushbulletKey))
             {
                 var req = Notifications.Pushbullet(
-                            CadiroSnifferSettings.Instance.PushbulletKey,
+                            MirrorQuestSettings.Instance.PushbulletKey,
                             text,
                             title);
 
                 if (req != Results.NotificationResult.None)
-                    CadiroSniffer.Log.ErrorFormat($"[CadiroSniffer] Network Error: {req}");
+                    MirrorQuest.Log.ErrorFormat($"[MirrorQuest] Network Error: {req}");
             }
 
-            if(CadiroSnifferSettings.Instance.ProwlEnabled && 
-                !string.IsNullOrWhiteSpace(CadiroSnifferSettings.Instance.ProwlKey))
+            if(MirrorQuestSettings.Instance.ProwlEnabled && 
+                !string.IsNullOrWhiteSpace(MirrorQuestSettings.Instance.ProwlKey))
             {
-                var req = Notifications.Prowl(CadiroSnifferSettings.Instance.ProwlKey,
-                            "CadiroSniffer",
+                var req = Notifications.Prowl(MirrorQuestSettings.Instance.ProwlKey,
+                            "MirrorQuest",
                             title,
                             text,
                             Notifications.NotificationPriority.Normal);
 
                 if (req != Results.NotificationResult.None)
-                    CadiroSniffer.Log.ErrorFormat($"[CadiroSniffer] Network Error: {req}");
+                    MirrorQuest.Log.ErrorFormat($"[MirrorQuest] Network Error: {req}");
             }
             
         }
@@ -69,21 +69,22 @@ namespace CadiroSniffer.Helpers
         {
             // success + stop + all
             sound = sound + ".wav";
-            var path = Path.Combine(ThirdPartyLoader.GetInstance("CadiroSniffer").ContentPath, "Sounds");
+            var path = Path.Combine(ThirdPartyLoader.GetInstance("MirrorQuest").ContentPath, "Sounds");
             path = Path.Combine(path, sound);
             if (File.Exists(path))
             {
-                CadiroSniffer.Log.DebugFormat($"[CadiroSniffer] Trying to play {sound} sound...");
+                MirrorQuest.Log.DebugFormat($"[MirrorQuest] Trying to play {sound} sound...");
                 var sp = new SoundPlayer(path);
                 sp.Play();
+                return;
             }
-            CadiroSniffer.Log.ErrorFormat($"[CadiroSniffer] {sound} file dosent exist.");
-            CadiroSniffer.Log.ErrorFormat($"[CadiroSniffer] Full path: {path}");
+            MirrorQuest.Log.ErrorFormat($"[MirrorQuest] {sound} file dosent exist.");
+            MirrorQuest.Log.ErrorFormat($"[MirrorQuest] Full path: {path}");
         }
 
         public static void Notify(Item item, int price, Status status, int stackCount = 1)
         {
-            CadiroSniffer.Log.DebugFormat("Starting Notify...");
+            MirrorQuest.Log.DebugFormat("Starting Notify...");
 
             string temp = $"{stackCount}x {item.FullName} for {price} Perandus coins.";
             string st = status.ToString();
@@ -91,10 +92,10 @@ namespace CadiroSniffer.Helpers
             bool mobileNotify = false;
             string soundNotify = "";
 
-            if (CadiroSnifferSettings.Instance.MobileNotifyAll)
+            if (MirrorQuestSettings.Instance.MobileNotifyAll)
                 mobileNotify = true;
 
-            if (CadiroSnifferSettings.Instance.SoundNotifyAll)
+            if (MirrorQuestSettings.Instance.SoundNotifyAll)
                 soundNotify = "all";
 
             switch (status)
@@ -105,9 +106,9 @@ namespace CadiroSniffer.Helpers
                 case Status.Success:
                     temp = $"Successfully purchased: {temp}";
                     offerResult = "Accepted";
-                    if (CadiroSnifferSettings.Instance.MobileNotifySuccess)
+                    if (MirrorQuestSettings.Instance.MobileNotifySuccess)
                         mobileNotify = true;
-                    if (CadiroSnifferSettings.Instance.SoundNotifySuccess)
+                    if (MirrorQuestSettings.Instance.SoundNotifySuccess)
                         soundNotify = "success";
                     break;
                 case Status.Failed:
@@ -115,18 +116,19 @@ namespace CadiroSniffer.Helpers
                     break;
                 case Status.Stop:
                     temp = $"Bot stopped! Offer: {temp}";
-                    if (CadiroSnifferSettings.Instance.MobileNotifyBotStop)
+                    if (MirrorQuestSettings.Instance.MobileNotifyBotStop)
                         mobileNotify = true;
-                    if (CadiroSnifferSettings.Instance.SoundNotifyBotStop)
+                    if (MirrorQuestSettings.Instance.SoundNotifyBotStop)
                         soundNotify = "stop";
                     break;
 
             }
 
             // add offer info to offer history
-                App.Current.Dispatcher.Invoke((Action)delegate
+            // Thanks Fujiyama for idea how to live update :)
+            App.Current.Dispatcher.Invoke((Action)delegate
             {
-                CadiroSnifferSettings.Instance.OfferCollection.Add(
+                MirrorQuestSettings.Instance.OfferCollection.Add(
                     new Offer()
                     {
                         timeOfOffer = DateTime.Now,

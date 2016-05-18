@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CadiroSniffer.Helpers
+namespace MirrorQuest.Helpers
 {
     public static class Lajt
     {

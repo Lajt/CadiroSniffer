@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CadiroSniffer.Classes
+namespace MirrorQuest.Classes
 {
     public class Offer
     {
