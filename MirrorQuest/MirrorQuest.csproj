@@ -29,6 +29,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="GreyMagic">
       <HintPath>..\..\..\TestingUnit\GreyMagic.dll</HintPath>
@@ -165,6 +168,15 @@
     </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>xcopy /y "$(ProjectDir)*cs" "$(SolutionDir)release\$(ProjectName)\"
+xcopy /y "$(ProjectDir)Classes" "$(SolutionDir)release\$(ProjectName)\Classes\"
+xcopy /y "$(ProjectDir)Helpers" "$(SolutionDir)release\$(ProjectName)\Helpers\"
+xcopy /y "$(ProjectDir)Sounds" "$(SolutionDir)release\$(ProjectName)\Sounds\"
+echo $(ProjectName)&gt;"$(SolutionDir)release\$(ProjectName)\3rdparty.txt"
+xcopy /y "$(ProjectDir)obj\Debug\Gui.baml" "$(SolutionDir)release\$(ProjectName)\"
+xcopy /y "$(ProjectDir)obj\Debug\Gui.g.cs" "$(SolutionDir)release\$(ProjectName)\"</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
