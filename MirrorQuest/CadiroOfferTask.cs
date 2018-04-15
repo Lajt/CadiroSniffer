@@ -11,9 +11,11 @@ using Loki.Game;
 using CommunityLib;
 using Loki.Game.Objects;
 using Buddy.Coroutines;
+using Default.EXtensions;
 using MirrorQuest.Helpers;
 using MirrorQuest.Classes;
 using Loki.Bot.Pathfinding;
+using Loki.Game.GameData;
 
 namespace MirrorQuest
 {
@@ -24,10 +26,10 @@ namespace MirrorQuest
         public string Name => "CadiroOfferTask";
         public string Description => "Task to handle Cadiro offers.";
         public string Author => "Lajt";
-        public string Version => "0.0.9.3";
+        public string Version => "1.0.0";
 
         private bool _skip = false;
-        private Vector2i cadiroPos = Vector2i.Zero;
+        private Vector2i _cadiroPos = Vector2i.Zero;
 
         #region Implementation of IRunnable
         
@@ -46,21 +48,32 @@ namespace MirrorQuest
         }
 
         #endregion
-
-        #region Implementation of ILogic
-
-        public async Task<bool> Logic(string type, params dynamic[] param)
+        
+        /// <inheritdoc />
+        public MessageResult Message(Message message)
         {
-            if (type == "core_area_changed_event")
+            if (message.Id == "area_changed_event")
             {
                 _skip = false;
-                cadiroPos = Vector2i.Zero;
+                _cadiroPos = Vector2i.Zero;
+
+                return MessageResult.Processed;
             }
 
-            if (_skip)
-                return false;
+            return MessageResult.Unprocessed;
+        }
 
-            if (type != "task_execute")
+        /// <inheritdoc />
+        public async Task<LogicResult> Logic(Logic logic)
+        {
+            return LogicResult.Unprovided;
+        }
+
+        /// <inheritdoc />
+        public async Task<bool> Run()
+        {
+            
+            if (_skip)
                 return false;
 
             if (LokiPoe.Me.IsDead || LokiPoe.Me.IsInTown || LokiPoe.Me.IsInHideout)
@@ -77,7 +90,7 @@ namespace MirrorQuest
                 if (cadiro.Distance > 25)
                 {
                     Log.DebugFormat($"[{Name}] Moving towards Cadiro.");
-                    await Navigation.MoveToLocation(cadiro.Position, 25, 10000, 
+                    await Navigation.MoveToLocation(cadiro.Position, 25, 10000,
                         () => Lajt.NearMonsters());
                     return true;
                 }
@@ -105,15 +118,15 @@ namespace MirrorQuest
                     var price = lista.Where(t => t.Key.Equals("Perandus Coin")).FirstOrDefault().Value;
 
                     Log.DebugFormat($"[{Name}] Cadiro's offer is ----> {item.StackCount}x {item.FullName} for {price} Perandus Coins.");
-                    
+
                     bool shouldAccept = false;
                     bool shouldStop = false;
                     int maxPrice = 0;
-                    
+
                     // check item list
                     var pos = MirrorQuestSettings.Instance.CommonCollection.Where(
-                            i => !string.IsNullOrEmpty(i.Name)
-                        && i.Name.Equals(item.FullName)).FirstOrDefault();
+                        i => !string.IsNullOrEmpty(i.Name)
+                             && i.Name.Equals(item.FullName)).FirstOrDefault();
 
                     if (pos != null)
                     {
@@ -123,7 +136,7 @@ namespace MirrorQuest
                         maxPrice = pos.MaxPrice;
                     }
 
-                    if(item.IsCurrencyType && MirrorQuestSettings.Instance.AutoCurrency)
+                    if (item.Rarity == Rarity.Currency && MirrorQuestSettings.Instance.AutoCurrency)
                     {
                         Log.DebugFormat($"[{Name}] Item is currency and autobuy is enabled.");
                         shouldAccept = true;
@@ -133,27 +146,27 @@ namespace MirrorQuest
                     if (!shouldAccept)
                     {
                         Log.DebugFormat($"[{Name}] Checking for specific types.");
-                        if (item.IsAmuletType && MirrorQuestSettings.Instance.AmuletBuy)
+                        if (item.HasMetadataFlags(MetadataFlags.Amulets) && MirrorQuestSettings.Instance.AmuletBuy)
                         {
                             maxPrice = MirrorQuestSettings.Instance.AmuletPrice;
                             shouldAccept = true;
                         }
-                        if (item.IsRingType && MirrorQuestSettings.Instance.RingBuy)
+                        if (item.HasMetadataFlags(MetadataFlags.Rings) && MirrorQuestSettings.Instance.RingBuy)
                         {
                             maxPrice = MirrorQuestSettings.Instance.RingPrice;
                             shouldAccept = true;
                         }
-                        if (item.IsJewelType && MirrorQuestSettings.Instance.JewelBuy)
+                        if (item.HasMetadataFlags(MetadataFlags.Jewels) && MirrorQuestSettings.Instance.JewelBuy)
                         {
                             maxPrice = MirrorQuestSettings.Instance.JewelPrice;
                             shouldAccept = true;
                         }
-                        if (item.IsMapType && MirrorQuestSettings.Instance.MapBuy)
+                        if (item.HasMetadataFlags(MetadataFlags.Maps) && MirrorQuestSettings.Instance.MapBuy)
                         {
                             maxPrice = MirrorQuestSettings.Instance.MapPrice;
                             shouldAccept = true;
                         }
-                        if(shouldAccept)
+                        if (shouldAccept)
                             Log.DebugFormat($"[{Name}] Specific type in trade window.");
                     }
 
@@ -172,7 +185,7 @@ namespace MirrorQuest
 
                             Alerter.Notify(item, price, Alerter.Status.Success, stackCount);
                             Log.DebugFormat($"[{Name}] Item should be purchased at this state.");
-                            
+
                             return false;
                         }
                         else
@@ -196,7 +209,7 @@ namespace MirrorQuest
                     _skip = true;
                     await Coroutines.ReactionWait();
 
-                    while(LokiPoe.InGameState.CadiroOfferUi.IsOpened)
+                    while (LokiPoe.InGameState.CadiroOfferUi.IsOpened)
                     {
                         Log.ErrorFormat($"[{Name}] Cadiro window is still open.");
                         LokiPoe.InGameState.CadiroOfferUi.Decline();
@@ -210,25 +223,16 @@ namespace MirrorQuest
                     return true;
                 }
             }
-            else if(cadiroPos != Vector2i.Zero)
+            else if (_cadiroPos != Vector2i.Zero)
             {
                 Log.ErrorFormat($"[{Name}] No Cadiro in our sight. Moving to place where we first seen him.");
-                await Navigation.MoveToLocation(ExilePather.FastWalkablePositionFor(cadiroPos),25,50000,
+                await Navigation.MoveToLocation(ExilePather.FastWalkablePositionFor(_cadiroPos), 25, 50000,
                     () => Lajt.NearMonsters());
                 return true;
             }
 
             return false;
         }
-
-        
-        public object Execute(string name, params dynamic[] param)
-        {
-            return null;
-        }
-
-        #endregion
-
     }
 }
 

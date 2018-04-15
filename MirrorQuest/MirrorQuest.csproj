@@ -33,11 +33,20 @@
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="CommunityLib">
+      <HintPath>..\..\..\TestingUnit3\lib\CommunityLib.dll</HintPath>
+    </Reference>
+    <Reference Include="Default">
+      <HintPath>..\..\..\TestingUnit3\lib\Default.dll</HintPath>
+    </Reference>
+    <Reference Include="ExilebuddyBETA">
+      <HintPath>..\..\..\TestingUnit3\ExilebuddyBETA.exe</HintPath>
+    </Reference>
     <Reference Include="GreyMagic">
-      <HintPath>..\..\..\TestingUnit\GreyMagic.dll</HintPath>
+      <HintPath>..\..\..\TestingUnit3\GreyMagic.dll</HintPath>
     </Reference>
     <Reference Include="log4net">
-      <HintPath>..\..\..\TestingUnit\log4net.dll</HintPath>
+      <HintPath>..\..\..\TestingUnit3\log4net.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\..\..\TestingUnit\Newtonsoft.Json.dll</HintPath>
@@ -63,76 +72,9 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
-    <Reference Include="TestingUnit">
-      <HintPath>..\..\..\TestingUnit\TestingUnit.exe</HintPath>
-    </Reference>
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\..\..\TestingUnit\3rdParty\CommunityLib\Actor.cs">
-      <Link>CommunityLib\Actor.cs</Link>
-    </Compile>
-    <Compile Include="..\..\..\TestingUnit\3rdParty\CommunityLib\Areas.cs">
-      <Link>CommunityLib\Areas.cs</Link>
-    </Compile>
-    <Compile Include="..\..\..\TestingUnit\3rdParty\CommunityLib\AreaStateCache.cs">
-      <Link>CommunityLib\AreaStateCache.cs</Link>
-    </Compile>
-    <Compile Include="..\..\..\TestingUnit\3rdParty\CommunityLib\CachedItemObject.cs">
-      <Link>CommunityLib\CachedItemObject.cs</Link>
-    </Compile>
-    <Compile Include="..\..\..\TestingUnit\3rdParty\CommunityLib\Chat.cs">
-      <Link>CommunityLib\Chat.cs</Link>
-    </Compile>
-    <Compile Include="..\..\..\TestingUnit\3rdParty\CommunityLib\Communication.cs">
-      <Link>CommunityLib\Communication.cs</Link>
-    </Compile>
-    <Compile Include="..\..\..\TestingUnit\3rdParty\CommunityLib\CommunityLib.cs">
-      <Link>CommunityLib\CommunityLib.cs</Link>
-    </Compile>
-    <Compile Include="..\..\..\TestingUnit\3rdParty\CommunityLib\CommunityLibGUI.xaml.cs">
-      <Link>CommunityLib\CommunityLibGUI.xaml.cs</Link>
-      <DependentUpon>CommunityLibGUI.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="..\..\..\TestingUnit\3rdParty\CommunityLib\CommunityLibSettings.cs">
-      <Link>CommunityLib\CommunityLibSettings.cs</Link>
-    </Compile>
-    <Compile Include="..\..\..\TestingUnit\3rdParty\CommunityLib\Data.cs">
-      <Link>CommunityLib\Data.cs</Link>
-    </Compile>
-    <Compile Include="..\..\..\TestingUnit\3rdParty\CommunityLib\Dialog.cs">
-      <Link>CommunityLib\Dialog.cs</Link>
-    </Compile>
-    <Compile Include="..\..\..\TestingUnit\3rdParty\CommunityLib\Inputs.cs">
-      <Link>CommunityLib\Inputs.cs</Link>
-    </Compile>
-    <Compile Include="..\..\..\TestingUnit\3rdParty\CommunityLib\Inventory.cs">
-      <Link>CommunityLib\Inventory.cs</Link>
-    </Compile>
-    <Compile Include="..\..\..\TestingUnit\3rdParty\CommunityLib\LibCoroutines.cs">
-      <Link>CommunityLib\LibCoroutines.cs</Link>
-    </Compile>
-    <Compile Include="..\..\..\TestingUnit\3rdParty\CommunityLib\Maths.cs">
-      <Link>CommunityLib\Maths.cs</Link>
-    </Compile>
-    <Compile Include="..\..\..\TestingUnit\3rdParty\CommunityLib\Navigation.cs">
-      <Link>CommunityLib\Navigation.cs</Link>
-    </Compile>
-    <Compile Include="..\..\..\TestingUnit\3rdParty\CommunityLib\Notifications.cs">
-      <Link>CommunityLib\Notifications.cs</Link>
-    </Compile>
-    <Compile Include="..\..\..\TestingUnit\3rdParty\CommunityLib\Results.cs">
-      <Link>CommunityLib\Results.cs</Link>
-    </Compile>
-    <Compile Include="..\..\..\TestingUnit\3rdParty\CommunityLib\Stash.cs">
-      <Link>CommunityLib\Stash.cs</Link>
-    </Compile>
-    <Compile Include="..\..\..\TestingUnit\3rdParty\CommunityLib\Tasks.cs">
-      <Link>CommunityLib\Tasks.cs</Link>
-    </Compile>
-    <Compile Include="..\..\..\TestingUnit\3rdParty\CommunityLib\Utility.cs">
-      <Link>CommunityLib\Utility.cs</Link>
-    </Compile>
     <Compile Include="CadiroOfferTask.cs" />
     <Compile Include="Gui.xaml.cs">
       <DependentUpon>Gui.xaml</DependentUpon>
@@ -146,11 +88,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="..\..\..\TestingUnit\3rdParty\CommunityLib\CommunityLibGUI.xaml">
-      <Link>CommunityLib\CommunityLibGUI.xaml</Link>
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="Gui.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -158,14 +95,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Sounds\" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="..\..\..\TestingUnit\3rdParty\CommunityLib\3rdparty-required.txt">
-      <Link>CommunityLib\3rdparty-required.txt</Link>
-    </Content>
-    <Content Include="..\..\..\TestingUnit\3rdParty\CommunityLib\3rdParty.txt">
-      <Link>CommunityLib\3rdParty.txt</Link>
-    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

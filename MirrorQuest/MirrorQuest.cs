@@ -20,7 +20,7 @@ namespace MirrorQuest
         public string Name => "MirrorQuest";
         public string Description => "Quest to find Mirror.";
         public string Author => "Lajt";
-        public string Version => "0.0.9.3";
+        public string Version => "1.0.0";
         
         #region Implementation of IBase
 
@@ -55,7 +55,7 @@ namespace MirrorQuest
         public void Start()
         {
             Log.DebugFormat($"[{Name}] Start");
-            Tasks.AddTask(new CadiroOfferTask(), "TownRunTask", Tasks.AddType.After);
+            Tasks.AddTask(new CadiroOfferTask(), new[] {"TownRunTask", "ReturnAfterDeathTask", "PostCombatHookTask" }, Tasks.AddType.After);
         }
 
         /// <summary> The plugin tick callback. Do any update logic here. </summary>
@@ -87,19 +87,17 @@ namespace MirrorQuest
 
         #endregion
 
-        #region Implementation of ILogic
 
-        public async Task<bool> Logic(string type, params dynamic[] param)
+        /// <inheritdoc />
+        public MessageResult Message(Message message)
         {
-            return false;
+            return MessageResult.Unprocessed;
         }
 
-        public object Execute(string name, params dynamic[] param)
+        /// <inheritdoc />
+        public async Task<LogicResult> Logic(Logic logic)
         {
-            return null;
+            return LogicResult.Unprovided;
         }
-
-        #endregion
-
     }
 }
