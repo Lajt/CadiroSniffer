@@ -25,7 +25,7 @@ namespace MirrorQuest
         public string Name => "CadiroOfferTask";
         public string Description => "Task to handle Cadiro offers.";
         public string Author => "Lajt";
-        public string Version => "1.0.1";
+        public string Version => "1.0.2";
 
         private bool _skip = false;
         private Vector2i _cadiroPos = Vector2i.Zero;

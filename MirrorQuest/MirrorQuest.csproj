@@ -33,9 +33,6 @@
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="CommunityLib">
-      <HintPath>..\..\..\TestingUnit3\lib\CommunityLib.dll</HintPath>
-    </Reference>
     <Reference Include="Default">
       <HintPath>..\..\..\TestingUnit3\lib\Default.dll</HintPath>
     </Reference>

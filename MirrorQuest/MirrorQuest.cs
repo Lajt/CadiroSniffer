@@ -20,7 +20,7 @@ namespace MirrorQuest
         public string Name => "MirrorQuest";
         public string Description => "Quest to find Mirror.";
         public string Author => "Lajt";
-        public string Version => "1.0.1";
+        public string Version => "1.0.2";
         
         #region Implementation of IBase
 
