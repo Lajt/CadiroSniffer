@@ -7,20 +7,20 @@ using System.Text;
 using System.Threading.Tasks;
 using log4net;
 using System.Windows.Controls;
+using Default.EXtensions;
 using Loki.Game;
-using CommunityLib;
 using Loki.Game.Objects;
 
 namespace MirrorQuest
 {
-    public class MirrorQuest : IPlugin
+    public class MirrorQuest : IPlugin, IStartStopEvents
     {
         public static readonly ILog Log = Logger.GetLoggerInstanceForType();
 
         public string Name => "MirrorQuest";
         public string Description => "Quest to find Mirror.";
         public string Author => "Lajt";
-        public string Version => "1.0.0";
+        public string Version => "1.0.1";
         
         #region Implementation of IBase
 
@@ -55,7 +55,8 @@ namespace MirrorQuest
         public void Start()
         {
             Log.DebugFormat($"[{Name}] Start");
-            Tasks.AddTask(new CadiroOfferTask(), new[] {"TownRunTask", "ReturnAfterDeathTask", "PostCombatHookTask" }, Tasks.AddType.After);
+            var taskManager = BotStructure.TaskManager;
+            taskManager.AddAfter(new CadiroOfferTask(), "PostCombatHookTask");
         }
 
         /// <summary> The plugin tick callback. Do any update logic here. </summary>

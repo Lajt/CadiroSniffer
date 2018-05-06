@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 using log4net;
 using System.Windows.Controls;
 using Loki.Game;
-using CommunityLib;
 using Loki.Game.Objects;
 using Buddy.Coroutines;
 using Default.EXtensions;
@@ -26,7 +25,7 @@ namespace MirrorQuest
         public string Name => "CadiroOfferTask";
         public string Description => "Task to handle Cadiro offers.";
         public string Author => "Lajt";
-        public string Version => "1.0.0";
+        public string Version => "1.0.1";
 
         private bool _skip = false;
         private Vector2i _cadiroPos = Vector2i.Zero;
@@ -90,7 +89,7 @@ namespace MirrorQuest
                 if (cadiro.Distance > 25)
                 {
                     Log.DebugFormat($"[{Name}] Moving towards Cadiro.");
-                    await Navigation.MoveToLocation(cadiro.Position, 25, 10000,
+                    await Lajt.MoveToLocation(cadiro.Position, 25, 10000,
                         () => Lajt.NearMonsters());
                     return true;
                 }
@@ -226,7 +225,7 @@ namespace MirrorQuest
             else if (_cadiroPos != Vector2i.Zero)
             {
                 Log.ErrorFormat($"[{Name}] No Cadiro in our sight. Moving to place where we first seen him.");
-                await Navigation.MoveToLocation(ExilePather.FastWalkablePositionFor(_cadiroPos), 25, 50000,
+                await Lajt.MoveToLocation(ExilePather.FastWalkablePositionFor(_cadiroPos), 25, 50000,
                     () => Lajt.NearMonsters());
                 return true;
             }
